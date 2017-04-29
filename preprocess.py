@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import math
+from sklearn.preprocessing import OneHotEncoder
 
 def map_income(income):
     if(income == "under $25,000"):
@@ -41,7 +41,6 @@ def transform(filename):
     # Map Income
     df['Income'] = df['Income'].map(map_income, na_action='ignore')
 
-    #print(df)
     # Map EducationLevel
     df['EducationLevel'] = df['EducationLevel'].map(map_education, na_action='ignore')
     
@@ -65,9 +64,7 @@ def transform(filename):
                     i += 1
             df[col_name] = df[col_name].map(tmp_dict,na_action='ignore')
 
-  
     return {'data':df.as_matrix(),'target':df["Happy"].as_matrix()} 
-    #return {'data':data,'target':target}
 
 def getMean(col):
     col_sum = np.sum(np.nan_to_num(col))
@@ -89,7 +86,7 @@ def getMostFrequent(col):
     # Count and record occurance of all the values
     counter = dict()
     for entry in col:
-        if not counter.has_key(entry):
+        if entry not in counter.keys():
             counter[entry] = 0
         else:
             counter[entry] += 1
@@ -97,7 +94,7 @@ def getMostFrequent(col):
     vals = counter.keys()
     occur = 0
     fre_val = 0
-    for val in vals
+    for val in vals:
         if counter[val] > occur:
             fre_val = val
             occur = counter[val]
@@ -118,15 +115,15 @@ def fill_missing(X, strategy, isClassified):
     
     """ your code here """
     (n, m) = X.shape
-    col = X[:,i]
     
-    if isClassified == false:
-        for i in xrange(m):
+    if isClassified == False:
+        for i in range(m):
+            col = X[:,i]
             if strategy == 'median':
                 sub_val = getMedian(col)
             if strategy == 'mean':
                 sub_val = getMean(col)
-            if strategy == 'most_frequent'
+            if strategy == 'most_frequent':
                 sub_val = getMostFrequent(col)
             X[:,i] = np.nan_to_num(sub_val)
 
@@ -134,8 +131,8 @@ def fill_missing(X, strategy, isClassified):
         gender_col_index = 2
         edu_col_index = 5
         edu_max = max(X[:,edu_col_index])
-        for gen in xrange(2):
-            for edu in xrange(edu_max+1):
+        for gen in range(2):
+            for edu in range(edu_max+1):
                 gen_indexes = np.where(X[:,gender_col_index] == gen)
                 edu_indexes = np.where(X[:,edu_col_index] == edu)
                 
