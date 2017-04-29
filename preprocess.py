@@ -78,9 +78,11 @@ def getMedian(col):
     if col.shape[0] <= 0:
         return 0
     else:
+        col=col[~np.isnan(col)]
         return np.median(col)
 
 def getMostFrequent(col):
+    col=col[~np.isnan(col)]
     if col.shape[0] <= 0:
         return 0
     # Count and record occurance of all the values
@@ -117,25 +119,88 @@ def fill_missing(X, strategy, isClassified):
     (n, m) = X.shape
     
     if isClassified == False:
-        for i in range(m):
+        for i in range(1,m):
             col = X[:,i]
-            if strategy == 'median':
+            # Self-defined strategy for filling missing data:
+            # Mean: year of born
+            if i == 1:
                 sub_val = getMedian(col)
-            if strategy == 'mean':
+            # Median: income, education level
+            if i == 3 or i == 5:
                 sub_val = getMean(col)
-            if strategy == 'most_frequent':
+            # Most Frequent Value: other uncompared labels
+            else:
                 sub_val = getMostFrequent(col)
-            X[:,i] = np.nan_to_num(sub_val)
+
+            row_id = np.where(np.isnan(X[:,i]))
+            X[row_id,i] = sub_val
 
     else:
         gender_col_index = 2
         edu_col_index = 5
         edu_max = max(X[:,edu_col_index])
-        for gen in range(2):
-            for edu in range(edu_max+1):
-                gen_indexes = np.where(X[:,gender_col_index] == gen)
-                edu_indexes = np.where(X[:,edu_col_index] == edu)
-                
+        
+        # delete data with no gender or  no education info:
+        X = np.delete(X,np.where(np.isnan(X[:,gender_col_index])),0)
+        X = np.delete(X,np.where(np.isnan(X[:,edu_col_index])),0)
+        
+        for i in range(1,m):
+            
+            if i == gender_col_index or i == edu_col_index:
+                continue
+            
+            col = X[:,i]
+            for gen in range(2):
+                for edu in range(int(edu_max)+1):
+                    # Get the indexes of instances belonging to a specific sub-classes:
+                    gen_indexes = np.where(X[:,gender_col_index] == gen)
+                    edu_indexes = np.where(X[:,edu_col_index] == edu)
+                    indexes = np.intersect1d(gen_indexes,edu_indexes)
+                    
+                    sub_col = col[indexes]
+                    # Self-defined strategy for filling missing data:
+                    # Mean: year of born
+                    if i == 1:
+                        sub_val = getMedian(sub_col)
+                    # Median: income, education level
+                    if i == 3 or i == 5:
+                        sub_val = getMean(sub_col)
+                    # Most Frequent Value: other uncompared labels
+                    else:
+                        sub_val = getMostFrequent(sub_col)
+                    
+
+                    all_nan_indexes = np.where(np.isnan(X[:,i]))
+                    sub_nan_indexes = np.intersect1d(all_nan_indexes,indexes)
+                    #print X[sub_nan_indexes,i]
+                    X[sub_nan_indexes,i] = sub_val
+                    #print X[sub_nan_indexes,i]
+
+    for i in range(m):
+        col = X[:,i]
+        if np.sum(np.isnan(col)) > 0:
+            print "Column {0} has nan values!".format(i)
+
+    X = X.astype(int)
+
+    # Do one-hot encoding on uncomparable attributes:
+    hold_col_index = 4
+    party_col_index = 6
+
+    append_col_set = np.concatenate(([party_col_index],[hold_col_index]))
+    #print append_col_set
+
+    for col_index in append_col_set:
+        enc = OneHotEncoder()
+        enc.fit(X[:,col_index:col_index+1])
+        new_cols = enc.transform(X[:,col_index:col_index+1]).toarray()
+        #print X[:10,:8]
+        X = np.delete(X,col_index,axis=1)
+        #print X.shape
+        #print new_cols.shape
+        X = np.insert(X,[col_index],new_cols,axis=1)
+        #print X[:10,:14]
 
 
-    return X_full
+
+    return X
