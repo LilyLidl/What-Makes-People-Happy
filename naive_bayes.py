@@ -15,9 +15,9 @@ class NaiveBayes:
     			happy.append(X[i,:])
     		else:
     			unhappy.append(X[i,:])
-    	# Column sums of happy and unhappy
-    	happy_sum = happy.sum(axis=0)
-    	unhappy_sum = unhappy.sum(axis=0)
+        # Column sums of happy and unhappy
+        happy_sum = happy.sum(axis=0)
+        unhappy_sum = unhappy.sum(axis=0)
 
         # Calculate log(P(C1)/P(C2))
         # C1: Happy = 1

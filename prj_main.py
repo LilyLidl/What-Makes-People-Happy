@@ -24,11 +24,13 @@ def main():
     ### use the naive bayes
     print('Train the naive bayes classifier')
     nb_model = BernoulliNB()
-    nb_model.fit(X_full, y)
+    nb_model.fit(X_full[:1800,:], y)
+    sk_y_predict = nb_model.predict()
+
     # Self-implemented
-    #clf = NaiveBayes()
-    #clf = clf.fit(X_full, y)
-    #y_predict = clf.predict()
+    clf = NaiveBayes()
+    clf = clf.fit(X_full[:1800,:], y)
+    self_y_predict = clf.predict()
 
     ## use the svm
     print('Train the SVM classifier')
