@@ -119,6 +119,7 @@ def fill_missing(X, strategy, isClassified):
     (n, m) = X.shape
     
     if isClassified == False:
+        discarded_rows = []
         for i in range(1,m):
             col = X[:,i]
             # Self-defined strategy for filling missing data:
@@ -141,6 +142,8 @@ def fill_missing(X, strategy, isClassified):
         edu_max = max(X[:,edu_col_index])
         
         # delete data with no gender or  no education info:
+        discarded_rows = np.union1d(np.where(np.isnan(X[:,gender_col_index]))[0],np.where(np.isnan(X[:,edu_col_index]))[0])
+        
         X = np.delete(X,np.where(np.isnan(X[:,gender_col_index])),0)
         X = np.delete(X,np.where(np.isnan(X[:,edu_col_index])),0)
         
@@ -202,5 +205,4 @@ def fill_missing(X, strategy, isClassified):
         #print X[:10,:14]
 
 
-
-    return X
+    return X,discarded_rows
