@@ -1,5 +1,6 @@
 from preprocess import transform
 from preprocess import fill_missing
+from sklearn import svm
 
 def main():
     # load training data
@@ -23,8 +24,10 @@ def main():
 
     ## use the svm
     print('Train the SVM classifier')
-    """ your code here """
-    # svm_model = ...
+    # linear, poly, rbf, sigmoid, or precomputed (or self-defined)?
+    svm_model = svm.SVC(kernel="")
+    svm_model.fit(X_full, y)
+
 
     ## use the random forest
     print('Train the random forest classifier')
