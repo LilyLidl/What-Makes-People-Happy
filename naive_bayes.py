@@ -11,10 +11,12 @@ class NaiveBayes:
     	happy = [] #C1
     	unhappy=[] #C2
     	for i in range(num_of_samples):
-    		if(y[i]==1):
-    			happy.append(X[i,:])
-    		else:
-    			unhappy.append(X[i,:])
+            if(y[i]==1):
+                happy.append(X[i,:])
+            else:
+                unhappy.append(X[i,:])
+
+        '''
         # Column sums of happy and unhappy
         happy_sum = happy.sum(axis=0)
         unhappy_sum = unhappy.sum(axis=0)
@@ -32,8 +34,9 @@ class NaiveBayes:
         for i in range(num_of_features):
         	likelihood_1i = happy_sum[i] / tmp1 
         	likelihood_2i = unhappy_sum[i] / tmp2
-        	likelihood_list[0].append(likelihood_1i)
-        	likelihood_list[1].append(likelihood_2i)
+        	self.likelihood_list[0].append(likelihood_1i)
+        	self.likelihood_list[1].append(likelihood_2i)
+        '''
 
         return self
 
