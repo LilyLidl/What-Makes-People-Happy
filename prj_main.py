@@ -1,6 +1,8 @@
 from preprocess import transform
 from preprocess import fill_missing
 from sklearn import svm
+from sklearn.naive_bayes import BernoulliNB
+from naive_bayes import NaiveBayes 
 
 def main():
     # load training data
@@ -11,6 +13,8 @@ def main():
 
     # fill in missing data (optional)
     X_full = fill_missing(X, 'most_frequent', False)
+    print(X_full)
+    print(y)
 
     ### use the logistic regression
     print('Train the logistic regression classifier')
@@ -19,8 +23,12 @@ def main():
 
     ### use the naive bayes
     print('Train the naive bayes classifier')
-    """ your code here """
-    # nb_model = ...
+    nb_model = BernoulliNB()
+    nb_model.fit(X_full, y)
+    # Self-implemented
+    #clf = NaiveBayes()
+    #clf = clf.fit(X_full, y)
+    #y_predict = clf.predict()
 
     ## use the svm
     print('Train the SVM classifier')

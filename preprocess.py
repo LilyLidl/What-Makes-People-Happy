@@ -179,7 +179,7 @@ def fill_missing(X, strategy, isClassified):
     for i in range(m):
         col = X[:,i]
         if np.sum(np.isnan(col)) > 0:
-            print "Column {0} has nan values!".format(i)
+            print("Column {0} has nan values!".format(i))
 
     X = X.astype(int)
 
