@@ -4,63 +4,68 @@ import math
 class NaiveBayes:
     def __init__(self, alpha=1.0):
         self.alpha = alpha
-        self.log_prior_ratio = 0
-        self.likelihood_list=[[],[]]
+        # p(C1): happy class prior
+        self.pos_prior = 0
+        # p(C2): unhappy class prior
+        self.neg_prior = 0
+        # p(x|C1): happy class likelihood
+        self.pos_likelihood = None
+        # p(x|C2): unhappy class likelihood
+        self.neg_likelihood = None
 
     def fit(self, X, y):
-    	happy = [] #C1
-    	unhappy=[] #C2
-        num_of_samples = X.shape[0]
-    	for i in range(num_of_samples):
-            if(y[i]==1):
-                happy.append(X[i,:])
-            else:
-                unhappy.append(X[i,:])
-
-        '''
-        # Column sums of happy and unhappy
-        happy_sum = happy.sum(axis=0)
-        unhappy_sum = unhappy.sum(axis=0)
-
-        # Calculate log(P(C1)/P(C2))
-        # C1: Happy = 1
-        # C2: Happy = 0
-        num_of_samples, num_of_features = X.shape
-        tmp1 = np.sum(y)
-        tmp2 = num_of_samples - tmp1
-        self.log_prior_ratio = math.log(tmp1 / tmp2)
-
-        # Store 2*d likelihoods for later use, d = num_of_features
-        # P(xi=1|C1), P(xi=1|C2) for all i = 1,...,d
-        for i in range(num_of_features):
-        	likelihood_1i = happy_sum[i] / tmp1 
-        	likelihood_2i = unhappy_sum[i] / tmp2
-        	self.likelihood_list[0].append(likelihood_1i)
-        	self.likelihood_list[1].append(likelihood_2i)
-        '''
-
+        self.n_samples, self.n_features = X.shape
+        
+        self.pos_likelihood = [dict()] * self.n_features
+        self.neg_likelihood = [dict()] * self.n_features
+        
+        # Calculate the priors:
+        pos_idx = np.where(y == 1)
+        neg_idx = np.where(y == 0)
+        self.pos_prior = 1.0 * pos_idx[0].shape[0] / self.n_samples
+        self.neg_prior = 1.0 * neg_idx[0].shape[0] / self.n_samples
+        
+        # Calculate the likelihood:
+        for i in range(self.n_features):
+            # Scanning the i-th feature
+            col = X[:,i]
+            pos_col = col[pos_idx]
+            neg_col = col[neg_idx]
+            value_set = set(col.flatten())
+            
+            for value in value_set:
+                pos_match_idx = np.where(pos_col == value)
+                neg_match_idx = np.where(neg_col == value)
+                self.pos_likelihood[i][value] = 1.0 * pos_match_idx[0].shape[0] / pos_col.shape[0]
+                self.neg_likelihood[i][value] = 1.0 * neg_match_idx[0].shape[0] / neg_col.shape[0]
+    
         return self
 
     def predict(self, X):
         # Decision rule:
-        # Choose C1 (classify as happy) if log posteriors > 0 
+        # Choose C1 (classify as happy) if p(x|C1)p(C1) > p(x|C2)p(C2)
         # Choose C2 otherwise
-        num_of_samples, num_of_features = X.shape
+        n_samples, n_features = X.shape
 
         y = []
-        for n in range(num_of_samples):
-        	likelihood_C1 = 1
-        	likelihood_C2 = 1
-        	for i in range(num_of_features):
-        		# Bernoulli distribution
-        		likelihood_C1 *= (self.likelihood_list[0][i] * X[n,i] + (1-self.likelihood_list[0][i])(1-X[n,i]))
-        		likelihood_C2 *= (self.likelihood_list[1][i] * X[n,i] + (1-self.likelihood_list[1][i])(1-X[n,i]))
-        	log_likelihood = math.log(likelihood_C1 / likelihood_C2)
-        	discriminant_result = self.log_prior_ratio + log_likelihood
-        	if(discriminant_result > 0):
+        for i in range(n_samples):
+        	posterior_C1 = self.pos_prior
+        	posterior_C2 = self.neg_prior
+        	for j in range(n_features):
+        		factor = X[i,j]
+                posterior_C1 *= self.pos_likelihood[j][factor]
+                posterior_C2 *= self.neg_likelihood[j][factor]
+            
+        	if(posterior_C1 > posterior_C2):
         		y.append(1)
         	else:
         		y.append(0)
 
-        return y
+        return np.array(y)
+
+    def score(self, X, y):
+        n_samples = X.shape[0]
+        predict_y = self.predict(X)
+        
+        return 1.0*(n_samples-np.linalg.norm(y-predict_y,ord=1))/n_samples
 

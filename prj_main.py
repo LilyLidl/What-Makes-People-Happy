@@ -23,11 +23,13 @@ def main():
     
     
     # Divide training samples for cross validation:
-    valid_percent = 0.5
+    valid_percent = 0.1
     
     np.random.seed(32)
     train_idx = np.random.choice(n_samples,int(np.floor(n_samples*(1-valid_percent))),False)
     valid_idx = np.setdiff1d(range(n_samples),train_idx)
+    print("Total {0} training samples.".format(len(train_idx)))
+    print("Total {0} validation samples.".format(len(valid_idx)))
     
     # Discard the user_id feature(0) and votes feature(n_features-1)
     train_X = X_full[train_idx,1:n_features-1]
@@ -43,13 +45,13 @@ def main():
     print('\n\nTrain the logistic regression classifier')
     # Sklearn package
     lr_model = LogisticRegression()
-    lr_model.fit(train_X,train_y)
+    lr_model = lr_model.fit(train_X,train_y)
     print("Sklearn LR validation score: {0}".format(lr_model.score(valid_X,valid_y)))
     #print("Sklearn LR learnt coef:\n{0},\n{1}".format(lr_model.coef_[:,:5],lr_model.intercept_))
     
     # Self-implemented
     self_lr = LogitR()
-    self_lr.fit(train_X,train_y)
+    self_lr = self_lr.fit(train_X,train_y)
     print("Self LR validation score: {0}".format(self_lr.score(valid_X,valid_y)))
     #print("Self LR learnt coef:\n{0},\n{1}".format(self_lr.coef[:5],self_lr.intercept))
     ### -------------------- use the logistic regression --------------------
@@ -66,7 +68,7 @@ def main():
     
     # Self-implemented
     self_nb = NaiveBayes()
-    self_nb = clf.fit(train_X,train_y)
+    self_nb = self_nb.fit(train_X,train_y)
     print("Self NB validation score: {0}".format(self_nb.score(valid_X,valid_y)))
     #self_y_predict = clf.predict(X_full[1800:,1:n_features-1])
     ### -------------------- use the naive bayes --------------------
