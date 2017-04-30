@@ -21,43 +21,58 @@ def main():
     
     n_samples, n_features = X_full.shape
     
+    
     # Divide training samples for cross validation:
-    valid_percent = 0.05
+    valid_percent = 0.5
     
-    #np.random.seed(32)
-    '''
-    train_samples=
-    valid_samples=
-    '''
+    np.random.seed(32)
+    train_idx = np.random.choice(n_samples,int(np.floor(n_samples*(1-valid_percent))),False)
+    valid_idx = np.setdiff1d(range(n_samples),train_idx)
     
+    # Discard the user_id feature(0) and votes feature(n_features-1)
+    train_X = X_full[train_idx,1:n_features-1]
+    train_y = y[train_idx]
+    valid_X = X_full[valid_idx,1:n_features-1]
+    valid_y = y[valid_idx]
+    #print train_X[0,:]
+    #print valid_X[0,:]
+    
+    
+    '''
     ### -------------------- use the logistic regression --------------------
     print('\n\nTrain the logistic regression classifier')
     # Sklearn package
     lr_model = LogisticRegression()
-    lr_model.fit(X_full[:,1:n_features-1],y)
-    print("Sklearn LR learnt coef:\n{0},\n{1}".format(lr_model.coef_[:,:5],lr_model.intercept_))
+    lr_model.fit(train_X,train_y)
+    print("Sklearn LR validation score: {0}".format(lr_model.score(valid_X,valid_y)))
+    #print("Sklearn LR learnt coef:\n{0},\n{1}".format(lr_model.coef_[:,:5],lr_model.intercept_))
     
     # Self-implemented
     self_lr = LogitR()
-    self_lr.fit(X_full[:,1:n_features-1],y)
-    print("Self LR learnt coef:\n{0},\n{1}".format(self_lr.coef[:5],self_lr.intercept))
+    self_lr.fit(train_X,train_y)
+    print("Self LR validation score: {0}".format(self_lr.score(valid_X,valid_y)))
+    #print("Self LR learnt coef:\n{0},\n{1}".format(self_lr.coef[:5],self_lr.intercept))
     ### -------------------- use the logistic regression --------------------
-    
-    
     '''
+    
+    
     ### -------------------- use the naive bayes --------------------
     # Sklearn package
     print('\n\nTrain the naive bayes classifier')
     nb_model = BernoulliNB()
-    nb_model.fit(X_full[:1800,1:n_features-1], y[:1800])
-    sk_y_predict = nb_model.predict(X_full[1800:,1:n_features-1])
+    nb_model.fit(train_X,train_y)
+    print("Sklearn NB validation score: {0}".format(nb_model.score(valid_X,valid_y)))
+    #sk_y_predict = nb_model.predict(X_full[1800:,1:n_features-1])
     
     # Self-implemented
-    clf = NaiveBayes()
-    clf = clf.fit(X_full[:1800,1:n_features-1], y[:1800])
-    self_y_predict = clf.predict(X_full[1800:,1:n_features-1])
+    self_nb = NaiveBayes()
+    self_nb = clf.fit(train_X,train_y)
+    print("Self NB validation score: {0}".format(self_nb.score(valid_X,valid_y)))
+    #self_y_predict = clf.predict(X_full[1800:,1:n_features-1])
     ### -------------------- use the naive bayes --------------------
 
+
+    '''
     ## use the svm
     print('\n\nTrain the SVM classifier')
     # linear, poly, rbf, sigmoid, or precomputed (or self-defined)?
@@ -69,7 +84,7 @@ def main():
     print('\n\nTrain the random forest classifier')
     """ your code here """
     # rf_model = ...
-
+    
     ## get predictions
     """ your code here """
     '''
