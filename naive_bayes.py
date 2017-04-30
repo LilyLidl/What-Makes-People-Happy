@@ -49,17 +49,17 @@ class NaiveBayes:
 
         y = []
         for i in range(n_samples):
-        	posterior_C1 = self.pos_prior
-        	posterior_C2 = self.neg_prior
-        	for j in range(n_features):
-        		factor = X[i,j]
+            posterior_C1 = self.pos_prior
+            posterior_C2 = self.neg_prior
+            for j in range(n_features):
+                factor = X[i,j]
                 posterior_C1 *= self.pos_likelihood[j][factor]
                 posterior_C2 *= self.neg_likelihood[j][factor]
             
-        	if(posterior_C1 > posterior_C2):
-        		y.append(1)
-        	else:
-        		y.append(0)
+            if(posterior_C1 > posterior_C2):
+                y.append(1)
+            else:
+                y.append(0)
 
         return np.array(y)
 
