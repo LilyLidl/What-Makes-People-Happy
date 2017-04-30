@@ -10,6 +10,7 @@ class NaiveBayes:
     def fit(self, X, y):
     	happy = [] #C1
     	unhappy=[] #C2
+        num_of_samples = X.shape[0]
     	for i in range(num_of_samples):
             if(y[i]==1):
                 happy.append(X[i,:])
