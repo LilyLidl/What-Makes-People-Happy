@@ -115,7 +115,8 @@ def fill_missing(X, strategy, isClassified):
     """
     
     
-    """ your code here """
+    # delete the HAPPY column:
+    X = np.delete(X,7,1)
     (n, m) = X.shape
     
     if isClassified == False:
@@ -146,6 +147,7 @@ def fill_missing(X, strategy, isClassified):
         
         X = np.delete(X,np.where(np.isnan(X[:,gender_col_index])),0)
         X = np.delete(X,np.where(np.isnan(X[:,edu_col_index])),0)
+        
         
         for i in range(1,m):
             
