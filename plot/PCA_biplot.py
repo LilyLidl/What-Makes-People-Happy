@@ -15,9 +15,9 @@ y = train_dataset['target']
 # fill in missing data (optional)
 X_full, discard_row = fill_missing(X, 'most_frequent', False)
 y = np.delete(y,discard_row)
-print X_full
 
-pca = PCA(n_components=2)
+pca = PCA(n_components=X_full.shape[1])
+pca.fit(X_full)
 components = pca.components_
 # The first principle component:
 component1 = components[0,:]
@@ -33,5 +33,5 @@ fig = plt.figure()
 fig.suptitle("PCA biplot")
 plt.xlabel("PC1")
 plt.ylabel("PC2")
-plt.scatter(PC1_val,PC2_val)
+plt.scatter(PC1_val,PC2_val,norm=1.0,marker='.')
 fig.savefig("PCA_biplot.jpg")
