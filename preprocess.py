@@ -117,7 +117,7 @@ def fill_missing(X, strategy, isClassified):
     
     # delete the HAPPY & VOTES column:
     X = np.delete(X,7,1)
-    X = np.delete(X,X.shape[1]-1,1)
+    #X = np.delete(X,X.shape[1]-1,1)
     (n, m) = X.shape
     
     if isClassified == False:
@@ -167,10 +167,10 @@ def fill_missing(X, strategy, isClassified):
                     # Self-defined strategy for filling missing data:
                     # Mean: year of born
                     if i == 1:
-                        sub_val = getMedian(sub_col)
+                        sub_val = getMean(sub_col)
                     # Median: income, education level
                     if i == 3 or i == 5:
-                        sub_val = getMean(sub_col)
+                        sub_val = getMedian(sub_col)
                     # Most Frequent Value: other uncompared labels
                     else:
                         sub_val = getMostFrequent(sub_col)
