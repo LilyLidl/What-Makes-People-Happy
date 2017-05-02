@@ -36,12 +36,13 @@ x_min, x_max = min(X_full[:,0])-1, max(X_full[:,0])+1
 y_min, y_max = min(X_full[:,1])-1, max(X_full[:,1])+1
 xx, yy =np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
 
-svm_model = svm.SVC(kernel="linear",C=1)
+
+svm_model = svm.SVC(kernel="rbf")
 #svm_model = svm.LinearSVC(C=1)
 svm_model.fit(X_full,y_full)
 print("SVM end")
 
-
+print(np.c_[xx.ravel(),yy.ravel()])
 Z = svm_model.predict(np.c_[xx.ravel(),yy.ravel()])
 print Z
 Z = Z.reshape(xx.shape)
