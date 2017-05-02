@@ -75,12 +75,24 @@ def main():
     print("Sklearn NB validation score: {0}".format(nb_model.score(valid_X,valid_y)))
     #sk_y_predict = nb_model.predict(X_full[1800:,1:n_features-1])
     '''
+    
     '''
     # Self-implemented
-    train_X, train_y, valid_X, valid_y = cross_validation(0.08,X_full,y) # Self NB validation score: 0.4492753623188406
-    self_nb = NaiveBayes()
-    self_nb = self_nb.fit(train_X,train_y)
-    print("Self NB validation score: {0}".format(self_nb.score(train_X,train_y)))
+    max_score = 0.0
+    max_i = 0
+    i=0.22
+    while i<0.3:
+        train_X, train_y, valid_X, valid_y = cross_validation(i,X_full,y) # Self NB validation score: 0.576 # i  0.118
+        self_nb = NaiveBayes()
+        self_nb = self_nb.fit(train_X,train_y)
+        print("i is %.3f" % i)
+        print("Self NB validation score: {0}".format(self_nb.score(train_X,train_y)))
+        if(self_nb.score(valid_X,valid_y) > max_score):
+            max_score = self_nb.score(valid_X,valid_y)
+            max_i = i
+        i += 0.005
+    print("max accuracy: %.3f"%max_score)
+    print("validation percentage (i): %.3f" %max_i) 
     #self_y_predict = clf.predict(X_full[1800:,1:n_features-1])
     ### -------------------- use the naive bayes --------------------
     '''
@@ -94,17 +106,19 @@ def main():
     while i<0.300:
     # linear, poly, rbf, sigmoid, or precomputed (or self-defined)?
         train_X, train_y, valid_X, valid_y = cross_validation(i,X_full,y)
-        svm_model = svm.SVC(kernel="linear")
+        svm_model = svm.SVC(kernel="rbf")
+        # rbf score: 0.676; validation percentage: 0.11
         svm_model.fit(train_X,train_y)
         print("i is %.3f" % i)
         print("Sklearn SVM validation score: {0}".format(svm_model.score(valid_X,valid_y)))
         if(svm_model.score(valid_X,valid_y) > max):
             max = svm_model.score(valid_X,valid_y)
             max_i = i
-        i += 0.001
+        i += 0.01
     print("max accuracy: %.3f"%max)
     print("validation percentage (i): %.3f" %max_i)        
     ### -------------------- use svm --------------------
+    
     
 
     '''    
