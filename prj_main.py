@@ -23,7 +23,7 @@ def main():
     
     
     # Divide training samples for cross validation:
-    valid_percent = 0.1
+    valid_percent = 0.2
     
     np.random.seed(32)
     train_idx = np.random.choice(n_samples,int(np.floor(n_samples*(1-valid_percent))),False)
@@ -69,7 +69,7 @@ def main():
     # Self-implemented
     self_nb = NaiveBayes()
     self_nb = self_nb.fit(train_X,train_y)
-    print("Self NB validation score: {0}".format(self_nb.score(valid_X,valid_y)))
+    print("Self NB validation score: {0}".format(self_nb.score(train_X,train_y)))
     #self_y_predict = clf.predict(X_full[1800:,1:n_features-1])
     ### -------------------- use the naive bayes --------------------
 
