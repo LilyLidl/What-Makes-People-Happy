@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 df = pd.read_csv('../data/train.csv')
 gender = np.array(df['Gender'])
 happy = np.array(df['Happy'])
-print(gender)
 
 
 
@@ -16,7 +15,7 @@ male_idx = np.where(gender == 'Male')[0]
 female_idx = np.where(gender == 'Female')[0]
 happy_idx = np.where(happy == 1)
 unhappy_idx = np.where(happy == 0)[0]
-print(happy_idx)
+
 
 happy_male_count = np.intersect1d(male_idx,happy_idx).shape[0]
 unhappy_male_count = np.intersect1d(male_idx,unhappy_idx).shape[0]

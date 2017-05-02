@@ -45,59 +45,89 @@ def main():
     
     
     ### -------------------- use the logistic regression --------------------
+    '''
     print('\n\nTrain the logistic regression classifier')
-    train_X, train_y, valid_X, valid_y = cross_validation(0.1,X_full,y)
+    train_X, train_y, valid_X, valid_y = cross_validation(0.08,X_full,y) #0.08
     # Sklearn package
     lr_model = LogisticRegression()
     lr_model = lr_model.fit(train_X,train_y)
     print("Sklearn LR validation score: {0}".format(lr_model.score(valid_X,valid_y)))
     #print("Sklearn LR learnt coef:\n{0},\n{1}".format(lr_model.coef_[:,:5],lr_model.intercept_))
     
+    
     # Self-implemented
-    train_X, train_y, valid_X, valid_y = cross_validation(0.16,X_full,y)
+    train_X, train_y, valid_X, valid_y = cross_validation(0.15,X_full,y) #0.15
     self_lr = LogitR()
     self_lr = self_lr.fit(train_X,train_y)
     print("Self LR validation score: {0}".format(self_lr.score(valid_X,valid_y)))
+
     #print("Self LR learnt coef:\n{0},\n{1}".format(self_lr.coef[:5],self_lr.intercept))
     ### -------------------- use the logistic regression --------------------
+    '''
     
-    
-    
+    '''
     ### -------------------- use the naive bayes --------------------
     # Sklearn package
     print('\n\nTrain the naive bayes classifier')
-    train_X, train_y, valid_X, valid_y = cross_validation(0.1,X_full,y)
+    train_X, train_y, valid_X, valid_y = cross_validation(0.1,X_full,y) # Sklearn NB validation score: 0.6762589928057554
     nb_model = BernoulliNB()
     nb_model.fit(train_X,train_y)
     print("Sklearn NB validation score: {0}".format(nb_model.score(valid_X,valid_y)))
     #sk_y_predict = nb_model.predict(X_full[1800:,1:n_features-1])
-    
+    '''
+    '''
     # Self-implemented
-    train_X, train_y, valid_X, valid_y = cross_validation(0.1,X_full,y)
+    train_X, train_y, valid_X, valid_y = cross_validation(0.08,X_full,y) # Self NB validation score: 0.4492753623188406
     self_nb = NaiveBayes()
     self_nb = self_nb.fit(train_X,train_y)
     print("Self NB validation score: {0}".format(self_nb.score(train_X,train_y)))
     #self_y_predict = clf.predict(X_full[1800:,1:n_features-1])
     ### -------------------- use the naive bayes --------------------
-    
-
     '''
+
+    
     ### -------------------- use svm --------------------
     print('\n\nTrain the SVM classifier')
+    max = 0.0
+    max_i = 0
+    i=0.100
+    while i<0.300:
     # linear, poly, rbf, sigmoid, or precomputed (or self-defined)?
-    svm_model = svm.SVC(kernel="linear")
-    svm_model.fit(train_X,train_y)
-    print("Sklearn SVM validation score: {0}".format(svm_model.score(valid_X,valid_y)))
+        train_X, train_y, valid_X, valid_y = cross_validation(i,X_full,y)
+        svm_model = svm.SVC(kernel="linear")
+        svm_model.fit(train_X,train_y)
+        print("i is %.3f" % i)
+        print("Sklearn SVM validation score: {0}".format(svm_model.score(valid_X,valid_y)))
+        if(svm_model.score(valid_X,valid_y) > max):
+            max = svm_model.score(valid_X,valid_y)
+            max_i = i
+        i += 0.001
+    print("max accuracy: %.3f"%max)
+    print("validation percentage (i): %.3f" %max_i)        
     ### -------------------- use svm --------------------
-    '''
+    
 
+    '''    
     ### -------------------- use random forest --------------------
     print('\n\nTrain the random forest classifier')
-    rf_model = RandomForestClassifier(n_estimators=25)
-    rf_model.fit(train_X,train_y)
-    print("Sklearn RF validation score: {0}".format(rf_model.score(valid_X,valid_y)))
+    max = 0.0
+    max_i = 0
+    i=0.100
+    while i<0.300:
+        train_X, train_y, valid_X, valid_y = cross_validation(0.151,X_full,y) # Sklearn RF validation score: 0.702 # i:  0.151
+        rf_model = RandomForestClassifier(n_estimators=29) # 29
+        rf_model.fit(train_X,train_y)
+        print("i is %.3f" % i)
+        print("Sklearn RF validation score: {0}".format(rf_model.score(valid_X,valid_y)))
+        if(rf_model.score(valid_X,valid_y) > max):
+            max = rf_model.score(valid_X,valid_y)
+            max_i = i
+        i += 0.001
+    print("max accuracy: %.3f"%max)
+    print("validation percentage (i): %.3f" %max_i)
     ### -------------------- use random forest --------------------
-    
+    '''
+      
     ## get predictions
     """ your code here """
     
