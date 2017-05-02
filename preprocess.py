@@ -115,8 +115,9 @@ def fill_missing(X, strategy, isClassified):
     """
     
     
-    # delete the HAPPY column:
+    # delete the HAPPY & VOTES column:
     X = np.delete(X,7,1)
+    X = np.delete(X,X.shape[1]-1,1)
     (n, m) = X.shape
     
     if isClassified == False:
