@@ -5,6 +5,7 @@ from sklearn.linear_model import LogisticRegression
 from lr import LogitR
 from sklearn.naive_bayes import BernoulliNB
 from naive_bayes import NaiveBayes
+from sklearn.ensemble import RandomForestClassifier
 import numpy as np
 
 def main():
@@ -23,7 +24,7 @@ def main():
     
     
     # Divide training samples for cross validation:
-    valid_percent = 0.2
+    valid_percent = 0.3
     
     np.random.seed(32)
     train_idx = np.random.choice(n_samples,int(np.floor(n_samples*(1-valid_percent))),False)
@@ -57,7 +58,7 @@ def main():
     ### -------------------- use the logistic regression --------------------
     '''
     
-    
+    '''   
     ### -------------------- use the naive bayes --------------------
     # Sklearn package
     print('\n\nTrain the naive bayes classifier')
@@ -72,24 +73,28 @@ def main():
     print("Self NB validation score: {0}".format(self_nb.score(train_X,train_y)))
     #self_y_predict = clf.predict(X_full[1800:,1:n_features-1])
     ### -------------------- use the naive bayes --------------------
-
+    '''
 
     '''
-    ## use the svm
+    ### -------------------- use svm --------------------
     print('\n\nTrain the SVM classifier')
     # linear, poly, rbf, sigmoid, or precomputed (or self-defined)?
     svm_model = svm.SVC(kernel="linear")
-    svm_model.fit(X_full[:,1:], y)
+    svm_model.fit(train_X,train_y)
+    print("Sklearn SVM validation score: {0}".format(svm_model.score(valid_X,valid_y)))
+    ### -------------------- use svm --------------------
+    '''
 
-
-    ## use the random forest
+    ### -------------------- use random forest --------------------
     print('\n\nTrain the random forest classifier')
-    """ your code here """
-    # rf_model = ...
+    rf_model = RandomForestClassifier(n_estimators=25)
+    rf_model.fit(train_X,train_y)
+    print("Sklearn RF validation score: {0}".format(rf_model.score(valid_X,valid_y)))
+    ### -------------------- use random forest --------------------
     
     ## get predictions
     """ your code here """
-    '''
+    
     
 
 if __name__ == '__main__':
