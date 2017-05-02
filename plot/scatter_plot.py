@@ -4,8 +4,8 @@ import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 
 df = pd.read_csv('../data/train.csv')
-income = df['Income']
-year = df['YOB']
+income = np.array(df['Income'])
+year = np.array(df['YOB'])
 
 
 # Do value conversion on income:
@@ -26,6 +26,8 @@ for i in range(len(income)):
 year_max = max(year)
 year_min = min(year)
 
+income = list(income)
+year = list(year)
 income_idx = np.where(np.logical_not(np.isnan(income)))[0]
 year_idx = np.where(np.logical_not(np.isnan(year)))[0]
 valid_idx = np.intersect1d(income_idx,year_idx)
