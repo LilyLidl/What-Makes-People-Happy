@@ -7,6 +7,7 @@ from sklearn.naive_bayes import BernoulliNB
 from naive_bayes import NaiveBayes
 from sklearn.ensemble import RandomForestClassifier
 import numpy as np
+import time
 
 # Divide training samples for cross validation:
 def cross_validation(valid_percent, X_full, y):
@@ -45,102 +46,88 @@ def main():
     
     
     ### -------------------- use the logistic regression --------------------
-    '''
     print('\n\nTrain the logistic regression classifier')
     train_X, train_y, valid_X, valid_y = cross_validation(0.08,X_full,y) #0.08
     # Sklearn package
+    lr_model_time1 = time.time()
     lr_model = LogisticRegression()
     lr_model = lr_model.fit(train_X,train_y)
+    lr_model_time2 = time.time()
     print("Sklearn LR validation score: {0}".format(lr_model.score(valid_X,valid_y)))
+    print("Sklearn LR training time: %.3f s" % (lr_model_time2 - lr_model_time1))
     #print("Sklearn LR learnt coef:\n{0},\n{1}".format(lr_model.coef_[:,:5],lr_model.intercept_))
     
     
     # Self-implemented
     train_X, train_y, valid_X, valid_y = cross_validation(0.15,X_full,y) #0.15
+    self_lr_time1 = time.time()
     self_lr = LogitR()
     self_lr = self_lr.fit(train_X,train_y)
+    self_lr_time2 = time.time()
     print("Self LR validation score: {0}".format(self_lr.score(valid_X,valid_y)))
-
+    print("Self LR training time: %.3f s" % (self_lr_time2 - self_lr_time1))
     #print("Self LR learnt coef:\n{0},\n{1}".format(self_lr.coef[:5],self_lr.intercept))
     ### -------------------- use the logistic regression --------------------
-    '''
     
-    '''
+    
+    
     ### -------------------- use the naive bayes --------------------
     # Sklearn package
     print('\n\nTrain the naive bayes classifier')
     train_X, train_y, valid_X, valid_y = cross_validation(0.1,X_full,y) # Sklearn NB validation score: 0.6762589928057554
+    nb_model_time1 = time.time()
     nb_model = BernoulliNB()
     nb_model.fit(train_X,train_y)
+    nb_model_time2 = time.time()
     print("Sklearn NB validation score: {0}".format(nb_model.score(valid_X,valid_y)))
+    print("SKlearn NB training time: %.3f s" % (nb_model_time2 - nb_model_time1))
     #sk_y_predict = nb_model.predict(X_full[1800:,1:n_features-1])
-    '''
     
-    '''
+    
+    
     # Self-implemented
-    max_score = 0.0
-    max_i = 0
-    i=0.22
-    while i<0.3:
-        train_X, train_y, valid_X, valid_y = cross_validation(i,X_full,y) # Self NB validation score: 0.576 # i  0.118
-        self_nb = NaiveBayes()
-        self_nb = self_nb.fit(train_X,train_y)
-        print("i is %.3f" % i)
-        print("Self NB validation score: {0}".format(self_nb.score(train_X,train_y)))
-        if(self_nb.score(valid_X,valid_y) > max_score):
-            max_score = self_nb.score(valid_X,valid_y)
-            max_i = i
-        i += 0.005
-    print("max accuracy: %.3f"%max_score)
-    print("validation percentage (i): %.3f" %max_i) 
+    train_X, train_y, valid_X, valid_y = cross_validation(0.118,X_full,y) # Self NB validation score: 0.576 # i  0.118
+    self_nb_time1 = time.time()
+    self_nb = NaiveBayes()
+    self_nb = self_nb.fit(train_X,train_y)
+    self_nb_time2 = time.time()
+    print("Self NB validation score: {0}".format(self_nb.score(train_X,train_y)))
+    print("Self NB training time: %.3f s" % (self_nb_time2 - self_nb_time1))
     #self_y_predict = clf.predict(X_full[1800:,1:n_features-1])
     ### -------------------- use the naive bayes --------------------
-    '''
+    
 
     
     ### -------------------- use svm --------------------
     print('\n\nTrain the SVM classifier')
-    max = 0.0
-    max_i = 0
-    i=0.100
-    while i<0.300:
-    # linear, poly, rbf, sigmoid, or precomputed (or self-defined)?
-        train_X, train_y, valid_X, valid_y = cross_validation(i,X_full,y)
-        svm_model = svm.SVC(kernel="rbf")
-        # rbf score: 0.676; validation percentage: 0.11
-        svm_model.fit(train_X,train_y)
-        print("i is %.3f" % i)
-        print("Sklearn SVM validation score: {0}".format(svm_model.score(valid_X,valid_y)))
-        if(svm_model.score(valid_X,valid_y) > max):
-            max = svm_model.score(valid_X,valid_y)
-            max_i = i
-        i += 0.01
-    print("max accuracy: %.3f"%max)
-    print("validation percentage (i): %.3f" %max_i)        
+    # linear, poly, rbf, or precomputed (or self-defined)?
+    train_X, train_y, valid_X, valid_y = cross_validation(0.17,X_full,y) #0.17
+    svm_model_time1 = time.time()
+    svm_model = svm.SVC(kernel="linear")
+        # rbf score: 0.682; validation percentage: 0.113
+        # sigmoid score: 0.577; validation percentage: 0.23
+        # poly score: 0.685; validation percentage: 0.16
+        # linear score: 0.701 validation percentage: 0.17
+    svm_model.fit(train_X,train_y)
+    print("train_X:", train_X.shape)
+    print("train_y:", train_y.shape)
+    svm_model_time2 = time.time()
+    print("Sklearn SVM validation score: {0}".format(svm_model.score(valid_X,valid_y)))
+    print("Sklearn SVM training time: %.3f s" % (svm_model_time2 - svm_model_time1))     
     ### -------------------- use svm --------------------
     
     
-
-    '''    
+ 
     ### -------------------- use random forest --------------------
     print('\n\nTrain the random forest classifier')
-    max = 0.0
-    max_i = 0
-    i=0.100
-    while i<0.300:
-        train_X, train_y, valid_X, valid_y = cross_validation(0.151,X_full,y) # Sklearn RF validation score: 0.702 # i:  0.151
-        rf_model = RandomForestClassifier(n_estimators=29) # 29
-        rf_model.fit(train_X,train_y)
-        print("i is %.3f" % i)
-        print("Sklearn RF validation score: {0}".format(rf_model.score(valid_X,valid_y)))
-        if(rf_model.score(valid_X,valid_y) > max):
-            max = rf_model.score(valid_X,valid_y)
-            max_i = i
-        i += 0.001
-    print("max accuracy: %.3f"%max)
-    print("validation percentage (i): %.3f" %max_i)
+    train_X, train_y, valid_X, valid_y = cross_validation(0.151,X_full,y) # Sklearn RF validation score: 0.702 # i:  0.151
+    rf_model_time1 = time.time()
+    rf_model = RandomForestClassifier(n_estimators=29) # 29
+    rf_model.fit(train_X,train_y)
+    rf_model_time2 = time.time()
+    print("Sklearn RF validation score: {0}".format(rf_model.score(valid_X,valid_y)))
+    print("Sklearn RF training time: %.3f s" % (rf_model_time2 - rf_model_time1))
     ### -------------------- use random forest --------------------
-    '''
       
     ## get predictions
     """ your code here """

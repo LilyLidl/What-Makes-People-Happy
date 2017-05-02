@@ -32,9 +32,13 @@ x_min, x_max = min(X[:,income_id])-1, max(X[:,income_id])+1
 y_min, y_max = min(X[:,educate_id])-1, max(X[:,educate_id])+1
 xx, yy =np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
 
-
-svm_model = svm.SVC(kernel="linear",C=1)
+print(X_full[0,:])
+print("SVM begin")
+print("X_full:",X_full.shape)
+print("y_full:", y_full.shape)
+svm_model = svm.SVC(kernel="linear")
 svm_model.fit(X_full,y_full)
+print("SVM end")
 
 Z = svm_model.predict(np.c_[xx.ravel(),yy.ravel()])
 Z = Z.reshape(xx.shape)

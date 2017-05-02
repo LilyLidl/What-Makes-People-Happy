@@ -19,7 +19,7 @@ X = pd.DataFrame(data=X, index=row_idx, columns=col_name)
 y = pd.DataFrame(data=y, index=row_idx, columns=['Happy'])
 
 data = ((pd.concat([X,y], axis=1)).dropna())[:100]
-print data
+#print(data)
 
 mapping = {1:'Happy', 0:'Unhappy'}
 data = data.replace({'Happy': mapping})
